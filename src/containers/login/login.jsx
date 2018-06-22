@@ -11,10 +11,13 @@ import {
   WhiteSpace,
   Button
 } from 'antd-mobile'
+import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
 
 import Logo from '../../components/logo/logo'
+import {login} from '../../redux/actions'
 
-export default class Login extends Component {
+class Login extends Component {
   state = {
     username: '',
     password: '',
@@ -32,15 +35,21 @@ export default class Login extends Component {
 
   // 注册
   login = () => {
-    console.log(this.state)
+    this.props.login(this.state)
   }
 
   render() {
+    const {redirectTo, msg} = this.props
+    if (redirectTo) {
+      return <Redirect to={redirectTo}/>
+    }
+
     return (
       <div>
         <NavBar>硅谷直聘</NavBar>
         <Logo/>
         <WingBlank>
+          {msg ? <p className='error-msg'>{msg}</p> : null}
           <List>
             <InputItem
               placeholder='输入用户名'
@@ -67,3 +76,7 @@ export default class Login extends Component {
   }
 }
 
+export default connect(
+  state => state.user,
+  {login}
+)(Login)
